@@ -10,3 +10,12 @@ There are three main parts to this project:
     - 1.2 Commentary generation
 2. **Fine-tune SmolVLM on this data**
 3. **Train a SmolVLA to drive the ego**
+
+## Setup Instructions
+
+To set up the environment, run the following commands:
+
+```bash
+chmod +x env.sh
+source env.sh
+```
