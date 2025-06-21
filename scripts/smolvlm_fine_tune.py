@@ -6,7 +6,7 @@ from trl import SFTConfig, SFTTrainer
 # Load local modules
 from scripts.smolvlm_utils import clear_memory
 from scripts.smolvlm_dataset import get_dataset
-from configs.smolvlm_config import MDOEL_ID, DATASET_ID
+from configs.smolvlm_config import MODEL_ID, DATASET_ID
 
 def collate_fn(examples):
     texts = [processor.apply_chat_template(example, tokenize=False) for example in examples]
@@ -41,13 +41,13 @@ bnb_config = BitsAndBytesConfig(
 
 # Load model and tokenizer
 model = Idefics3ForConditionalGeneration.from_pretrained(
-    MDOEL_ID,
+    MODEL_ID,
     device_map="auto",
     torch_dtype=torch.bfloat16,
     quantization_config=bnb_config,
     _attn_implementation="flash_attention_2",
 )
-processor = AutoProcessor.from_pretrained(MDOEL_ID)
+processor = AutoProcessor.from_pretrained(MODEL_ID)
 
 
 # Configure LoRA
