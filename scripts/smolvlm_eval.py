@@ -3,10 +3,10 @@ from transformers import Idefics3ForConditionalGeneration, AutoProcessor
 from scripts.smolvlm_utils import clear_memory, generate_text_from_sample
 from peft import PeftModel, PeftConfig
 
-from configs.smolvlm_config import MODEL_ID, DATASET_ID
+from configs.smolvlm_config import MODEL_ID, OUTPUT_DIR
 from scripts.smolvlm_dataset import get_dataset
 
-pretrained_model_name_or_path = "outputs/smolvlm-256m-instruct-trl-sft-ChartQA"
+pretrained_model_name_or_path = OUTPUT_DIR
 train_data_id = 10  # Index of the training data sample to use for evaluation
 
 # Clear memory before starting

@@ -6,7 +6,7 @@ from trl import SFTConfig, SFTTrainer
 # Load local modules
 from scripts.smolvlm_utils import clear_memory
 from scripts.smolvlm_dataset import get_dataset
-from configs.smolvlm_config import MODEL_ID, DATASET_ID
+from configs.smolvlm_config import MODEL_ID, OUTPUT_DIR
 
 def collate_fn(examples):
     texts = [processor.apply_chat_template(example, tokenize=False) for example in examples]
@@ -71,7 +71,7 @@ peft_model.print_trainable_parameters()
 
 # Configure training arguments using SFTConfig
 training_args = SFTConfig(
-    output_dir="outputs/smolvlm-256m-instruct-trl-sft-ChartQA",
+    output_dir=OUTPUT_DIR,
     num_train_epochs=1,
     per_device_train_batch_size=2, # OOM for batch size 4
     gradient_accumulation_steps=4,
