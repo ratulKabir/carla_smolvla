@@ -1,6 +1,11 @@
 import gc
 import time
 import torch
+import os
+import textwrap
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from PIL import Image
 
 
 def clear_memory():
@@ -32,7 +37,6 @@ def clear_memory():
     print(f"GPU reserved memory: {torch.cuda.memory_reserved() / 1024**3:.2f} GB")
 
 
-clear_memory()
 
 def generate_text_from_sample(model, processor, sample, max_new_tokens=1024, device="cuda"):
     # Prepare the text input by applying the chat template
@@ -68,3 +72,61 @@ def generate_text_from_sample(model, processor, sample, max_new_tokens=1024, dev
     )
 
     return output_text[0]  # Return the first decoded output text
+
+
+def save_vqa_chat_vis(image: Image.Image, query: str, ground_truth: str, prediction: str, save_path: str):
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.axis('off')
+
+    # Left: Image
+    ax_img = fig.add_axes([0.05, 0.1, 0.4, 0.8])
+    ax_img.imshow(image)
+    ax_img.axis('off')
+
+    # Right: Chat-style text
+    ax_text = fig.add_axes([0.5, 0.1, 0.45, 0.8])
+    ax_text.axis('off')
+
+    def draw_bubble(label, text, y, side="left", color="#eeeeee", text_color="#000"):
+        # Draw label
+        label_y = y
+        x_label = 0.0 if side == "left" else 0.99
+        ax_text.text(
+            x_label,
+            label_y,
+            label,
+            fontsize=9,
+            va='top',
+            ha='left' if side == "left" else "right",
+            color="#444",
+            fontweight='bold'
+        )
+
+        # Compute wrapped text
+        wrapped = textwrap.fill(text, width=40)
+        text_height = 0.05 + 0.018 * wrapped.count("\n")
+        
+        # Draw bubble
+        y -= 0.035  # spacing after label
+        ax_text.text(
+            x_label,
+            y,
+            wrapped,
+            fontsize=10,
+            va='top',
+            ha='left' if side == "left" else "right",
+            color=text_color,
+            bbox=dict(boxstyle="round,pad=0.4", facecolor=color, edgecolor='gray'),
+        )
+
+        return y - text_height - 0.04  # spacing after bubble
+
+    y = 1.0
+    y = draw_bubble("User", query, y, side="right", color="#d1e7dd")
+    y = draw_bubble("Assistant (GT)", ground_truth, y, side="left", color="#f8d7da")
+    y = draw_bubble("Assistant (Pred)", prediction, y, side="left", color="#cfe2ff")
+
+    # Save the figure
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path, bbox_inches='tight', dpi=150)
+    plt.close()
