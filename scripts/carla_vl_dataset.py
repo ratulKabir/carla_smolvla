@@ -49,8 +49,8 @@ def save_dataset_jsonl(samples: list, output_path: str):
             f.write(json.dumps(sample) + "\n")
     print(f"✓ Saved {len(samples)} samples to {output_path}")
 
-def load_jsonl_dataset(path: str):
-    return load_dataset("json", data_files=path, split="train")
+def load_jsonl_dataset(path: str, split: str = "train"):
+    return load_dataset("json", data_files=path, split=split)
 
 if __name__ == "__main__":
     # Set your root directories here
