@@ -6,25 +6,25 @@ from trl import SFTConfig, SFTTrainer
 # Load local modules
 from scripts.smolvlm_utils import clear_memory
 from scripts.smolvlm_dataset import get_dataset
-from configs.smolvlm_config import MODEL_ID, OUTPUT_DIR, RANDOM_SEED
+from configs.smolvlm_config import (MODEL_ID, OUTPUT_DIR, RANDOM_SEED, 
+                                    BATCH_SIZE, NUM_TRAIN_SAMPLES)
 
 def collate_fn(examples):
-    texts = [processor.apply_chat_template(example, tokenize=False) for example in examples]
+    texts = [processor.apply_chat_template(example["messages"], tokenize=False) for example in examples]
 
     image_inputs = []
     for example in examples:
-        image = example[1]["content"][0]["image"]
+        image = example["messages"][1]["content"][0]["image"]
         if image.mode != "RGB":
             image = image.convert("RGB")
         image_inputs.append([image])
 
     batch = processor(text=texts, images=image_inputs, return_tensors="pt", padding=True)
     labels = batch["input_ids"].clone()
-    labels[labels == processor.tokenizer.pad_token_id] = -100  # Mask padding tokens in labels
-    labels[labels == image_token_id] = -100  # Mask image token IDs in labels
+    labels[labels == processor.tokenizer.pad_token_id] = -100
+    labels[labels == image_token_id] = -100
 
     batch["labels"] = labels
-
     return batch
 
 # Clear memory before starting
@@ -72,8 +72,8 @@ peft_model.print_trainable_parameters()
 # Configure training arguments using SFTConfig
 training_args = SFTConfig(
     output_dir=OUTPUT_DIR,
-    num_train_epochs=1,
-    per_device_train_batch_size=2, # OOM for batch size 4
+    num_train_epochs=4,
+    per_device_train_batch_size=BATCH_SIZE, # OOM for batch size 4
     gradient_accumulation_steps=4,
     warmup_steps=50,
     learning_rate=1e-4,
@@ -82,6 +82,7 @@ training_args = SFTConfig(
     save_strategy="steps",
     save_steps=25,
     save_total_limit=1,
+    max_steps=NUM_TRAIN_SAMPLES // BATCH_SIZE,  # Adjust based on your dataset size
     optim="adamw_torch_fused",
     bf16=True,
     push_to_hub=False,
