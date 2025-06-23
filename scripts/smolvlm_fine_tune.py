@@ -6,7 +6,7 @@ from trl import SFTConfig, SFTTrainer
 # Load local modules
 from scripts.smolvlm_utils import clear_memory
 from scripts.smolvlm_dataset import get_dataset
-from configs.smolvlm_config import MODEL_ID, OUTPUT_DIR
+from configs.smolvlm_config import MODEL_ID, OUTPUT_DIR, RANDOM_SEED
 
 def collate_fn(examples):
     texts = [processor.apply_chat_template(example, tokenize=False) for example in examples]
