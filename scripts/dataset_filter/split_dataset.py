@@ -2,10 +2,10 @@ import json
 import random
 
 # Paths
-input_path = "datasets/vqa_train_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl"  # replace with your file
-train_path = "datasets/train_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl"
-val_path = "datasets/val_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl"
-test_path = "datasets/test_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl"
+input_path = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/vqa_train.jsonl"  # replace with your file
+train_path = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/train.jsonl"
+val_path = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/val.jsonl"
+test_path = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/test.jsonl"
 
 # Load data
 with open(input_path, "r") as f:

@@ -1,7 +1,9 @@
 import torch
+import io
 from transformers import Idefics3ForConditionalGeneration, AutoProcessor, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model
 from trl import SFTConfig, SFTTrainer
+from PIL import Image
 
 # Load local modules
 from scripts.smolvlm_utils import clear_memory
@@ -14,7 +16,7 @@ def collate_fn(examples):
 
     image_inputs = []
     for example in examples:
-        image = example["messages"][1]["content"][0]["image"]
+        image = Image.open(io.BytesIO(example["messages"][1]["content"][0]["image"]['bytes']))
         if image.mode != "RGB":
             image = image.convert("RGB")
         image_inputs.append([image])
@@ -30,7 +32,7 @@ def collate_fn(examples):
 # Clear memory before starting
 clear_memory()
 # Load the dataset
-train_dataset, eval_dataset, test_dataset = get_dataset()
+train_dataset, eval_dataset, _ = get_dataset()
 
 
 # BitsAndBytesConfig int-4 config
@@ -82,7 +84,7 @@ training_args = SFTConfig(
     save_strategy="steps",
     save_steps=25,
     save_total_limit=1,
-    max_steps=NUM_TRAIN_SAMPLES // BATCH_SIZE,  # Adjust based on your dataset size
+    # max_steps=NUM_TRAIN_SAMPLES // BATCH_SIZE,  # Adjust based on your dataset size
     optim="adamw_torch_fused",
     bf16=True,
     push_to_hub=False,

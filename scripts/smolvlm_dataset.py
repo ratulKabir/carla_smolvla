@@ -1,7 +1,7 @@
 from PIL import Image
 
 from datasets import load_dataset
-from configs.smolvlm_config import DATASET_ID, SYS_MSG, NUM_TRAIN_SAMPLES, NUM_VAL_SAMPLES, STREAM
+from configs.smolvlm_config import DATASET_ID, SYS_MSG, NUM_TRAIN_SAMPLES, NUM_VAL_SAMPLES, STREAM, TRAIN_DATASET_ID, VAL_DATASET_ID, TEST_DATASET_ID
 from scripts.carla_vl_dataset import load_jsonl_dataset
 
 
@@ -13,10 +13,10 @@ def get_dataset(test=False):
 
     elif "carla_vqa" in DATASET_ID.lower():
         if not test:
-            train_dataset = load_jsonl_dataset("datasets/train_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
-            eval_dataset = load_jsonl_dataset("datasets/val_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
+            train_dataset = load_jsonl_dataset(TRAIN_DATASET_ID)
+            eval_dataset = load_jsonl_dataset(VAL_DATASET_ID)
         else:
-            test_dataset = load_jsonl_dataset("datasets/test_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
+            test_dataset = load_jsonl_dataset(TEST_DATASET_ID)
 
     # Define batched=True map step
     def map_fn(example):
@@ -55,11 +55,11 @@ def get_dataset(test=False):
 
 
     if not test:
-        train_dataset = train_dataset.map(map_fn, remove_columns=test_dataset.column_names)
-        eval_dataset = eval_dataset.map(map_fn, remove_columns=test_dataset.column_names)
+        train_dataset = train_dataset.map(map_fn, remove_columns=train_dataset.column_names, num_proc=8)
+        eval_dataset = eval_dataset.map(map_fn, remove_columns=eval_dataset.column_names, num_proc=8)
         return train_dataset, eval_dataset, None
     else:
-        test_dataset = test_dataset.map(map_fn, remove_columns=test_dataset.column_names)  # This removes all original columns
+        test_dataset = test_dataset.map(map_fn, remove_columns=test_dataset.column_names, num_proc=8)  # This removes all original columns
         return None, None, test_dataset
 
 if __name__ == "__main__":

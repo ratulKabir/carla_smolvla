@@ -1,6 +1,10 @@
 # DATASET_ID = "HuggingFaceM4/ChartQA"
 DATASET_ID = "carla_vqa"
 
+TRAIN_DATASET_ID = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/train.jsonl"
+VAL_DATASET_ID = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/val.jsonl"
+TEST_DATASET_ID = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/test.jsonl"
+
 NUM_TRAIN_SAMPLES = 10000  # Number of samples to use for training
 NUM_VAL_SAMPLES = 64  # Number of samples to use for validation
 
@@ -19,7 +23,7 @@ Base your answers strictly on what is visible in the image. Do not speculate or 
 MODEL_ID = "HuggingFaceTB/SmolVLM-256M-Instruct"
 
 # OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-ChartQA"
-OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-carla-vqa-10kdata-2350ckp/checkpoint-2350"
+OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-carla-vqa-one-scene"
 
 RANDOM_SEED = 42
 

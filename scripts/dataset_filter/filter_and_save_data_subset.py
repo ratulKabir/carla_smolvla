@@ -1,8 +1,8 @@
 import json
 
 input_path = "datasets/vqa_train.jsonl"  # <-- update with your real file path
-output_path = "datasets/vqa_train_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl"
-folder_key = "Town12_Rep0_1392_route0_01_11_15_19_20"
+output_path = "datasets/Town12_Rep0_1306_route0_01_11_23_54_47/vqa_train.jsonl"
+folder_key = "Town12_Rep0_1306_route0_01_11_23_54_47"
 
 filtered_data = []
 
