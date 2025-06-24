@@ -3,6 +3,7 @@ import time
 import torch
 import os
 import textwrap
+import io
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -41,11 +42,11 @@ def clear_memory():
 def generate_text_from_sample(model, processor, sample, max_new_tokens=1024, device="cuda"):
     # Prepare the text input by applying the chat template
     text_input = processor.apply_chat_template(
-        sample[1:2], add_generation_prompt=True  # Use the sample without the system message
+        sample['messages'][1:2], add_generation_prompt=True  # Use the sample without the system message
     )
 
     image_inputs = []
-    image = sample[1]["content"][0]["image"]
+    image = Image.open(io.BytesIO(sample['messages'][1]['content'][0]['image']['bytes']))
     if image.mode != "RGB":
         image = image.convert("RGB")
     image_inputs.append([image])
@@ -123,7 +124,7 @@ def save_vqa_chat_vis(image: Image.Image, query: str, ground_truth: str, predict
 
     y = 1.0
     y = draw_bubble("User", query, y, side="right", color="#d1e7dd")
-    y = draw_bubble("Assistant (GT)", ground_truth, y, side="left", color="#f8d7da")
+    y = draw_bubble("GT", ground_truth, y, side="left", color="#f8d7da")
     y = draw_bubble("Assistant (Pred)", prediction, y, side="left", color="#cfe2ff")
 
     # Save the figure

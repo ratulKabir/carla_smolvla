@@ -2,7 +2,7 @@
 DATASET_ID = "carla_vqa"
 
 NUM_TRAIN_SAMPLES = 10000  # Number of samples to use for training
-NUM_VAL_SAMPLES = 100  # Number of samples to use for validation
+NUM_VAL_SAMPLES = 64  # Number of samples to use for validation
 
 # SYS_MSG for chartQA
 # SYS_MSG = """You are a Vision Language Model specialized in interpreting visual data from chart images.
@@ -19,10 +19,10 @@ Base your answers strictly on what is visible in the image. Do not speculate or 
 MODEL_ID = "HuggingFaceTB/SmolVLM-256M-Instruct"
 
 # OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-ChartQA"
-OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-carla-vqa-10kdata"
+OUTPUT_DIR = "outputs/smolvlm-256m-instruct-trl-sft-carla-vqa-10kdata-2350ckp/checkpoint-2350"
 
 RANDOM_SEED = 42
 
-STREAM = True
+STREAM = False
 
 BATCH_SIZE = 2  # Adjust based on your GPU memory

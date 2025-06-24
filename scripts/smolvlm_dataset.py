@@ -12,19 +12,11 @@ def get_dataset(test=False):
         )
 
     elif "carla_vqa" in DATASET_ID.lower():
-        eval_dataset = load_jsonl_dataset("datasets/vqa_val.jsonl", f"train[:{int(NUM_VAL_SAMPLES * 2)}]")
-        eval_len = len(eval_dataset)
-        split_idx = eval_len // 2
-
         if not test:
-            if STREAM:
-                train_dataset = load_jsonl_dataset("datasets/vqa_train.jsonl", streaming=STREAM).take(NUM_TRAIN_SAMPLES)
-            else:
-                # Load the sub training dataset if not streaming
-                train_dataset = load_jsonl_dataset("datasets/vqa_train.jsonl", f"train[:{NUM_TRAIN_SAMPLES}]")
-            eval_dataset = eval_dataset.select(range(split_idx))
+            train_dataset = load_jsonl_dataset("datasets/train_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
+            eval_dataset = load_jsonl_dataset("datasets/val_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
         else:
-            test_dataset = eval_dataset.select(range(split_idx, eval_len))
+            test_dataset = load_jsonl_dataset("datasets/test_Town12_Rep0_1392_route0_01_11_15_19_20.jsonl")
 
     # Define batched=True map step
     def map_fn(example):
@@ -63,11 +55,11 @@ def get_dataset(test=False):
 
 
     if not test:
-        train_dataset = train_dataset.map(map_fn)
-        eval_dataset = eval_dataset.map(map_fn)
+        train_dataset = train_dataset.map(map_fn, remove_columns=test_dataset.column_names)
+        eval_dataset = eval_dataset.map(map_fn, remove_columns=test_dataset.column_names)
         return train_dataset, eval_dataset, None
     else:
-        test_dataset = test_dataset.map(map_fn)
+        test_dataset = test_dataset.map(map_fn, remove_columns=test_dataset.column_names)  # This removes all original columns
         return None, None, test_dataset
 
 if __name__ == "__main__":
